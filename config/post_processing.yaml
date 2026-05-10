@@ -1,0 +1,49 @@
+# Post Processing Configuration
+coze_plugin:
+  enabled: false
+  api_token: ${COZE_API_TOKEN}
+  plugin_id: "7514607540051640360"
+
+tos_upload:
+  enabled: false
+  access_key: ${TOS_ACCESS_KEY}
+  secret_key: ${TOS_SECRET_KEY}
+  bucket: "video-edit"
+  endpoint: "https://tos-s3-cn-shanghai.volces.com"
+  region: "cn-shanghai"
+  key_prefix: "pixelle"
+
+smart_decision:
+  enabled: true
+  llm_model: "gpt-4o-mini"
+
+toolchain_presets:
+  product_video:
+    name: "产品视频"
+    default_tools:
+      - tool: add_subtitles
+        config:
+          font_size: 24
+      - tool: video_super_resolution
+        config:
+          resolution: "1080p"
+  tutorial_video:
+    name: "教程视频"
+    default_tools:
+      - tool: add_subtitles
+        config:
+          font_size: 28
+      - tool: audio_denoise
+  marketing_video:
+    name: "营销视频"
+    default_tools:
+      - tool: concat_videos
+      - tool: add_text
+      - tool: video_hdr
+  news_video:
+    name: "新闻视频"
+    default_tools:
+      - tool: add_subtitles
+      - tool: video_speed
+        config:
+          speed: 1.1

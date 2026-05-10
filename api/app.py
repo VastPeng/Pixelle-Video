@@ -54,6 +54,9 @@ from api.routers import (
     files_router,
     resources_router,
     frame_router,
+    post_processing_router,
+    external_services_router,
+    pipeline_nodes_router,
 )
 
 
@@ -134,6 +137,11 @@ app.include_router(files_router, prefix=api_config.api_prefix)
 app.include_router(resources_router, prefix=api_config.api_prefix)
 app.include_router(frame_router, prefix=api_config.api_prefix)
 
+# New routers for secondary development
+app.include_router(post_processing_router, prefix=api_config.api_prefix)
+app.include_router(external_services_router, prefix=api_config.api_prefix)
+app.include_router(pipeline_nodes_router, prefix=api_config.api_prefix)
+
 
 @app.get("/")
 async def root():
@@ -153,6 +161,9 @@ async def root():
             "files": f"{api_config.api_prefix}/files",
             "resources": f"{api_config.api_prefix}/resources",
             "frame": f"{api_config.api_prefix}/frame",
+            "post_processing": "/post-processing",
+            "external_services": "/external-services",
+            "pipeline_nodes": "/pipeline/nodes",
         }
     }
 

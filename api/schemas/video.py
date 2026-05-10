@@ -18,6 +18,13 @@ from typing import Optional, Literal, Dict, Any
 from pydantic import BaseModel, Field
 
 
+class PostProcessingConfig(BaseModel):
+    """Post-processing configuration for video generation"""
+    enabled: bool = Field(False, description="Enable Coze post-processing")
+    video_type: str = Field("standard", description="Video type for auto-decide")
+    tools: Optional[list[str]] = Field(None, description="Manual tool list (overrides auto-decide)")
+
+
 class VideoGenerateRequest(BaseModel):
     """Video generation request"""
     
@@ -82,7 +89,10 @@ class VideoGenerateRequest(BaseModel):
     # === BGM ===
     bgm_path: Optional[str] = Field(None, description="Background music path")
     bgm_volume: float = Field(0.3, ge=0.0, le=1.0, description="BGM volume (0.0-1.0)")
-    
+
+    # === Post Processing ===
+    post_processing: Optional[PostProcessingConfig] = Field(None, description="Post-processing configuration (Coze plugin)")
+
     class Config:
         json_schema_extra = {
             "example": {

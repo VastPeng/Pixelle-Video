@@ -16,7 +16,7 @@ Configuration schema with Pydantic models
 Single source of truth for all configuration defaults and validation.
 """
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, SecretStr
 
 
 class LLMConfig(BaseModel):
@@ -88,12 +88,40 @@ class TemplateConfig(BaseModel):
     )
 
 
+class TosUploadConfig(BaseModel):
+    """Volcengine TOS upload configuration"""
+    enabled: bool = Field(default=False, description="Enable TOS upload")
+    access_key: str = Field(default="", description="TOS access key")
+    secret_key: SecretStr = Field(default=SecretStr(""), description="TOS secret key")
+    bucket: str = Field(default="video-edit", description="TOS bucket name")
+    endpoint: str = Field(default="https://tos-s3-cn-shanghai.volces.com", description="TOS endpoint")
+    region: str = Field(default="cn-shanghai", description="TOS region")
+    key_prefix: str = Field(default="pixelle", description="TOS key prefix")
+
+    def get_secret_key(self) -> str:
+        """Get the secret key value"""
+        return self.secret_key.get_secret_value()
+
+
+class CozePluginConfig(BaseModel):
+    """Coze plugin configuration"""
+    enabled: bool = Field(default=False, description="Enable Coze plugin")
+    api_token: SecretStr = Field(default=SecretStr(""), description="Coze API token")
+    plugin_id: str = Field(default="7514607540051640360", description="Coze plugin ID")
+
+    def get_api_token(self) -> str:
+        """Get the API token value"""
+        return self.api_token.get_secret_value()
+
+
 class PixelleVideoConfig(BaseModel):
     """Pixelle-Video main configuration"""
     project_name: str = Field(default="Pixelle-Video", description="Project name")
     llm: LLMConfig = Field(default_factory=LLMConfig)
     comfyui: ComfyUIConfig = Field(default_factory=ComfyUIConfig)
     template: TemplateConfig = Field(default_factory=TemplateConfig)
+    tos_upload: TosUploadConfig = Field(default_factory=TosUploadConfig, description="TOS upload configuration")
+    coze_plugin: CozePluginConfig = Field(default_factory=CozePluginConfig, description="Coze plugin configuration")
     
     def is_llm_configured(self) -> bool:
         """Check if LLM is properly configured"""
